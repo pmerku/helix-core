@@ -1,0 +1,46 @@
+# ========================================================================= #
+# This compose file runs a migrated Swarm instance. Redis and Swarm are in  #
+# containers, p4d is on the host machine.                                   #
+# ========================================================================= #
+version: '3.7'
+
+networks:
+  default:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.0.1.0/24
+          gateway: 192.0.1.1
+    name: swarm-net
+
+services:
+  helix.swarm:
+    image: perforce/helix-swarm:latest
+    hostname: 'localhost'
+    container_name: helix-swarm
+    restart: unless-stopped
+    volumes:
+      - ./storage/swarm-data:/opt/perforce/swarm/data
+      - ./storage/www:/var/www
+    ports:
+      - 80:80
+    working_dir: /opt/perforce/swarm
+    depends_on:
+      - helix.redis
+    tty: false
+    env_file:
+      - .env
+    networks:
+      - default
+
+  helix.redis:
+    image: "redis"
+    hostname: helix.redis
+    container_name: helix-redis
+    restart: unless-stopped
+    command: redis-server --protected-mode no --port 7379 --appendonly yes
+    volumes:
+      - ./storage/redis-data:/data
+    networks:
+      - default
