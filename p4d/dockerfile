@@ -1,0 +1,19 @@
+FROM ubuntu:noble
+
+RUN apt-get update && apt-get upgrade
+RUN apt-get install -y wget gnupg apt-transport-https
+
+RUN wget -qO - https://package.perforce.com/perforce.pubkey | apt-key add -
+RUN echo 'deb http://package.perforce.com/apt/ubuntu focal release' > /etc/apt/sources.list.d/perforce.list
+
+RUN apt-get update
+RUN apt-get install -y helix-p4d
+
+EXPOSE 1666
+
+COPY startup.sh ./startup.sh
+
+RUN chown perforce:perforce ./startup.sh \
+    && chmod 0700 ./startup.sh
+
+ENTRYPOINT ./startup.sh

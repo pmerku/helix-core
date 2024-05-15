@@ -1,0 +1,8 @@
+P4NAME=p4-server
+P4PORT=ssl:192.0.1.2:1666
+P4ROOT=/p4data
+P4USER=admin
+P4PASSWD=password1234!
+P4SSLDIR="$P4ROOT/ssl"
+
+# create your .env file in the same path as the example_env.txt file

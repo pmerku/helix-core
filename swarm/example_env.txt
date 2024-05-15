@@ -1,0 +1,13 @@
+P4D_PORT=ssl:192.0.1.2:1666
+P4D_SUPER=admin
+P4D_SUPER_PASSWD=password1234!
+
+SWARM_HOST=helix_swarm
+SWARM_USER=swarm
+SWARM_PASSWD=password1234!
+
+MAIL_HOST=helix_swarm
+
+SWARM_FORCE_EXT=y
+
+# create your .env file in the same path as the example_env.txt file

@@ -1,0 +1,18 @@
+FROM perforce/helix-swarm:latest
+
+RUN apt-get update && apt-get -y upgrade
+RUN apt install -y curl
+
+EXPOSE 1667:1667
+
+ENTRYPOINT \
+    until nc -zw 1 helix_p4d 1666; do sleep 1; done && sleep 1 && \
+    cron start && \
+    /opt/perforce/swarm/sbin/configure-swarm.sh --non-interactive \
+    --p4port $P4D_PORT \
+    --swarm-user $SWARM_USER --swarm-passwd "${SWARM_PASSWD}" \
+    --swarm-host $SWARM_HOST --email-host $MAILHOST \
+    --create --create-group \
+    --super-user $P4D_SUPER --super-passwd "${P4D_SUPER_PASSWD}" && \
+
+    bash

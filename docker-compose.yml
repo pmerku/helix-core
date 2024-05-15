@@ -1,0 +1,91 @@
+version: '3.8'
+
+networks:
+  helix.network:
+    name: helix.network
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.0.1.0/24
+          gateway: 192.0.1.1
+
+services:
+  helix.p4d:
+    build:
+      context: p4d
+      dockerfile: dockerfile
+    container_name: 'helix_p4d'
+    restart: unless-stopped
+    env_file:
+      - ./p4d/.env
+    ports:
+      - 1666:1666
+    volumes:
+      - ./p4d/p4dctl.conf.d:/etc/perforce/p4dctl.conf.d
+      - ./_data/p4d/data:/p4data
+    networks:
+      helix.network:
+        ipv4_address: 192.0.1.2
+
+  helix.swarm:
+    image: perforce/helix-swarm:latest
+    hostname: 'helix_swarm'
+    container_name: 'helix.swarm'
+    restart: unless-stopped
+    volumes:
+      - ./_data/swarm/data:/opt/perforce/swarm/data
+      - ./_data/swarm/www:/var/www
+    ports:
+      - 1667:1667
+    working_dir: /opt/perforce/swarm
+    depends_on:
+      - helix.redis
+      - helix.p4d
+    tty: false
+    env_file:
+      - ./swarm/.env
+    networks:
+      helix.network:
+        ipv4_address: 192.0.1.3
+
+  helix.redis:
+    image: redis:latest
+    hostname: 'helix_redis'
+    container_name: 'helix.redis'
+    restart: unless-stopped
+    command: redis-server --protected-mode no --port 7379 --appendonly yes
+    volumes:
+      - ./_data/redis/data:/data
+    networks:
+      helix.network:
+        ipv4_address: 192.0.1.4
+  
+  helix.ci:
+    image: jenkins/jenkins:lts
+    container_name: 'helix_ci'
+    restart: unless-stopped
+    privileged: true
+    user: root
+    ports:
+      - 8080:8080
+      - 50000:50000
+    volumes:
+      - ./_data/jenkins/data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      helix.network:
+        ipv4_address: 192.0.1.5
+  
+  helix.ci.agent:
+    image: jenkins/ssh-agent:jdk11
+    container_name: 'helix_ci_agent'
+    restart: unless-stopped
+    privileged: true
+    user: root
+    expose:
+      - 22
+    #environment:
+    #  - JENKINS_AGENT_SSH_PUBKEY=${JENKINS_AGENT_SSH_PUBKEY}
+    networks:
+      helix.network:
+        ipv4_address: 192.0.1.6

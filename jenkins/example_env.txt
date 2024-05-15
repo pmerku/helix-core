@@ -1,0 +1,3 @@
+JENKINS_AGENT_SSH_PUBLIC_KEY=some-key
+
+# create your .env file in the same path as the example_env.txt file

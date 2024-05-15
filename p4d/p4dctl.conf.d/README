@@ -1,0 +1,18 @@
+Files in this directory with names matching *.conf will automatically
+be included by p4dctl. 
+
+Each file should conform to the same syntax as /etc/perforce/p4dctl.conf itself.
+
+For example, a specification to start a Perforce server might look
+like this:
+
+p4d main
+{
+    Owner	= 	perforce
+    Execute	=	/usr/bin/p4d
+    P4ROOT	=	/p4/p4-main
+    P4JOURNAL	=	journal
+    P4PORT	=	1666
+    PATH	=	/bin:/usr/bin:/usr/local/bin:/opt/perforce/sbin:/opt/perforce/bin
+}
+

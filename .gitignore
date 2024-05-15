@@ -1,3 +1,6 @@
 .vs
 .vscode
 .DS_Store
+_data
+.env
+p4d/p4dctl.conf.d/p4-*
