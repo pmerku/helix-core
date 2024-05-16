@@ -3,7 +3,7 @@ FROM perforce/helix-swarm:latest
 RUN apt-get update && apt-get -y upgrade
 RUN apt install -y curl
 
-EXPOSE 1667:1667
+EXPOSE 80
 
 ENTRYPOINT \
     until nc -zw 1 helix_p4d 1666; do sleep 1; done && sleep 1 && \
