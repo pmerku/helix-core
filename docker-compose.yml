@@ -37,6 +37,7 @@ services:
       - ./_data/swarm/www:/var/www
     ports:
       - 80:80
+      - 443:443
     working_dir: /opt/perforce/swarm
     depends_on:
       - helix.redis

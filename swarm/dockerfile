@@ -4,6 +4,7 @@ RUN apt-get update && apt-get -y upgrade
 RUN apt install -y curl
 
 EXPOSE 80
+EXPOSE 443
 
 ENTRYPOINT \
     until nc -zw 1 helix_p4d 1666; do sleep 1; done && sleep 1 && \
