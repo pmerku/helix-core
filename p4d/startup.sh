@@ -20,6 +20,8 @@ fi
 p4 configure set lbr.proxy.case=1
 p4 configure set auth.sso.allow.passwd=1
 p4 configure set dm.keys.hide=2
+p4 configure set dm.user.resetpassword=1
+
 p4 typemap -o; cat typemap.txt | p4 typemap -i
 
 tail -F $P4ROOT/logs/log

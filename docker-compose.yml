@@ -55,6 +55,8 @@ services:
     container_name: 'helix.redis'
     restart: unless-stopped
     command: redis-server --protected-mode no --port 7379 --appendonly yes
+    ports:
+      - 7379:7379
     volumes:
       - ./_data/redis/data:/data
     networks:
